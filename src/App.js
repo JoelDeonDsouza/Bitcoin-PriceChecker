@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Dimmer, Loader, Select } from "semantic-ui-react";
+import Chart from "react-apexcharts";
 import "./App.css";
 
 const currencys = [
@@ -12,6 +13,8 @@ function App() {
   const [display, setDisplay] = useState(true);
   const [currency, setCurrency] = useState("USD");
   const [coinPrice, setCoinPrice] = useState(null);
+  const [chartValue, setChartValue] = useState(null);
+  const [spade, setSapde] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -21,13 +24,37 @@ function App() {
       );
       const data = await res.json();
       setCoinPrice(data.bpi);
-      setDisplay(false);
+      getChartValue();
     }
     fetchData();
   }, []);
 
   const handleCurrency = (e, data) => {
     setCurrency(data.value);
+  };
+
+  const getChartValue = async () => {
+    const res = await fetch(
+      "https://api.coindesk.com/v1/bpi/historical/close.json"
+    );
+    const data = await res.json();
+    const list = Object.keys(data.bpi);
+    const spade = Object.values(data.bpi);
+
+    setChartValue({
+      xaxis: {
+        list: list,
+      },
+    });
+
+    setSapde([
+      {
+        name: "Bitcoin Value",
+        data: spade,
+      },
+    ]);
+
+    setDisplay(false);
   };
 
   return (
@@ -70,6 +97,15 @@ function App() {
                 </Card.Content>
               </Card>
             </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Chart
+              options={chartValue}
+              series={spade}
+              type="line"
+              width="1000"
+              height="400"
+            />
           </div>
         </>
       )}
