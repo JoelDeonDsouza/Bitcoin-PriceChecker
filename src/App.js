@@ -9,6 +9,7 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       const res = await fetch(
+        //api from coinDesk
         "https://api.coindesk.com/v1/bpi/currentprice.json"
       );
       const data = await res.json();
