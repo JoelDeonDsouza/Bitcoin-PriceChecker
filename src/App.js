@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Dimmer, Loader, Select } from "semantic-ui-react";
+import { Card, Dimmer, Input, Loader, Select } from "semantic-ui-react";
 import Chart from "react-apexcharts";
 import "./App.css";
 
@@ -38,12 +38,12 @@ function App() {
       "https://api.coindesk.com/v1/bpi/historical/close.json"
     );
     const data = await res.json();
-    const list = Object.keys(data.bpi);
+    const categories = Object.keys(data.bpi);
     const spade = Object.values(data.bpi);
 
     setChartValue({
       xaxis: {
-        list: list,
+        categories: categories,
       },
     });
 
@@ -74,20 +74,19 @@ function App() {
             className="price-box"
             style={{
               display: "flex",
-              justifyContent: "space-around",
               alignItems: "center",
-              width: 600,
-              height: 300,
+              justifyContent: "center",
+              height: 150,
             }}
           >
-            <div className="form">
+            <div className="form" style={{ paddingRight: 40 }}>
               <Select
                 placeholder="Select Currency"
                 onChange={handleCurrency}
                 options={currencys}
               ></Select>
             </div>
-            <div className="value">
+            <div className="value" style={{ paddingRight: 40 }}>
               <Card>
                 <Card.Content>
                   <Card.Header>{currency} Currency</Card.Header>
@@ -96,6 +95,16 @@ function App() {
                   </Card.Description>
                 </Card.Content>
               </Card>
+            </div>
+            <div className="startdate">
+              <Input
+                type="date"
+                id="startDate"
+                style={{ paddingRight: 40 }}
+              ></Input>
+            </div>
+            <div className="enddate">
+              <Input type="date" id="startDate"></Input>
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
