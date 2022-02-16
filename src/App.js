@@ -44,6 +44,8 @@ function App() {
     setChartValue({
       xaxis: {
         categories: categories,
+        min: 22,
+        max: 31,
       },
     });
 
