@@ -113,11 +113,23 @@ function App() {
               series={spade}
               type="line"
               width="1000"
-              height="400"
+              height="490"
             />
           </div>
         </>
       )}
+      <div style={{ padding: 30, backgroundColor: "#313552", height: 85 }}>
+        <div
+          className="footer"
+          style={{
+            textAlign: "center",
+            justifyContent: "center",
+            fontSize: 25,
+          }}
+        >
+          Bitcoin Price radar powered by coinDesk
+        </div>
+      </div>
     </div>
   );
 }
