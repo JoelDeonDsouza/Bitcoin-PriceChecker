@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Card, Dimmer, Input, Loader, Select } from "semantic-ui-react";
+import { Card, Dimmer, Loader, Select } from "semantic-ui-react";
+import SemanticDatepicker from "react-semantic-ui-datepickers";
 import Chart from "react-apexcharts";
 import "./App.css";
+import "react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css";
 
 const currencys = [
   { value: "USD", text: "USD" },
@@ -15,37 +17,51 @@ function App() {
   const [coinPrice, setCoinPrice] = useState(null);
   const [chartValue, setChartValue] = useState(null);
   const [spade, setSapde] = useState(null);
+  const [startDate, setStartDate] = useState(
+    new Date(new Date() - 10 * 86400000).toISOString().slice(0, 10)
+  );
+  const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 10));
 
   useEffect(() => {
     async function fetchData() {
       const res = await fetch(
-        //api from coinDesk
-        "https://api.coindesk.com/v1/bpi/currentprice.json"
+        // api from coinDesk
+        `https://api.coindesk.com/v1/bpi/currentprice.json`
       );
       const data = await res.json();
       setCoinPrice(data.bpi);
       getChartValue();
     }
     fetchData();
-  }, []);
+  }, [startDate, endDate]);
 
   const handleCurrency = (e, data) => {
     setCurrency(data.value);
   };
 
+  const handleStartDateChange = (event, data) =>
+    setStartDate(data.value.toISOString().slice(0, 10));
+
+  const handleEndtDateChange = (event, data) =>
+    setEndDate(data.value.toISOString().slice(0, 10));
+
   const getChartValue = async () => {
+    const params = endDate
+      ? `start=${startDate}&end=${endDate}&index=${currency}`
+      : ``;
     const res = await fetch(
-      "https://api.coindesk.com/v1/bpi/historical/close.json"
+      `https://api.coindesk.com/v1/bpi/historical/close.json?${params}`
     );
     const data = await res.json();
     const categories = Object.keys(data.bpi);
     const spade = Object.values(data.bpi);
+    // console.log(spade);
 
     setChartValue({
       xaxis: {
         categories: categories,
-        min: 22,
-        max: 31,
+        min: 2,
+        max: 10,
       },
     });
 
@@ -98,15 +114,17 @@ function App() {
                 </Card.Content>
               </Card>
             </div>
-            <div className="startdate">
-              <Input
-                type="date"
-                id="startDate"
-                style={{ paddingRight: 40 }}
-              ></Input>
+            <div className="startdate" style={{ marginRight: 20 }}>
+              <SemanticDatepicker
+                placeholder={startDate}
+                onChange={handleStartDateChange}
+              />
             </div>
-            <div className="enddate">
-              <Input type="date" id="startDate"></Input>
+            <div className="startdate">
+              <SemanticDatepicker
+                placeholder={endDate}
+                onChange={handleEndtDateChange}
+              />
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
